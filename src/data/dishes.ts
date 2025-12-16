@@ -1,11 +1,4 @@
-"use client";
-
-import Image from "next/image";
-import Link from "next/link";
-import { useState, useMemo } from "react";
-import SearchBar from "@/components/SearchBar";
-
-const dishes = [
+export const dishes = [
   {
     id: 1,
     name: "Ultimate Cheeseburger",
@@ -15,8 +8,7 @@ const dishes = [
     category: "Burgers",
     nutrition: { calories: 650, protein: 35, carbs: 45, fat: 40 },
     reviews: { rating: 4.8, count: 120 },
-    reviewComments: ["Amazing flavor!", "Best burger ever."],
-    tags: ["burger", "cheese", "beef", "ultimate", "juicy"]
+    reviewComments: ["Amazing flavor!", "Best burger ever."]
   },
   {
     id: 2,
@@ -27,8 +19,7 @@ const dishes = [
     category: "Wings",
     nutrition: { calories: 480, protein: 25, carbs: 20, fat: 30 },
     reviews: { rating: 4.6, count: 95 },
-    reviewComments: ["So spicy and good!", "Crispy perfection."],
-    tags: ["chicken", "wings", "spicy", "crispy", "hot"]
+    reviewComments: ["So spicy and good!", "Crispy perfection."]
   },
   {
     id: 3,
@@ -39,8 +30,7 @@ const dishes = [
     category: "Sides",
     nutrition: { calories: 420, protein: 15, carbs: 50, fat: 20 },
     reviews: { rating: 4.7, count: 85 },
-    reviewComments: ["Loaded and delicious!", "Perfect side."],
-    tags: ["fries", "cheese", "bacon", "loaded", "golden"]
+    reviewComments: ["Loaded and delicious!", "Perfect side."]
   },
   {
     id: 4,
@@ -51,8 +41,7 @@ const dishes = [
     category: "Pizza",
     nutrition: { calories: 700, protein: 30, carbs: 80, fat: 25 },
     reviews: { rating: 4.9, count: 150 },
-    reviewComments: ["Fresh and tasty!", "Love the crust."],
-    tags: ["pizza", "margherita", "mozzarella", "basil", "italian"]
+    reviewComments: ["Fresh and tasty!", "Love the crust."]
   },
   {
     id: 5,
@@ -63,8 +52,7 @@ const dishes = [
     category: "Salads",
     nutrition: { calories: 320, protein: 12, carbs: 15, fat: 28 },
     reviews: { rating: 4.5, count: 70 },
-    reviewComments: ["Healthy and fresh!", "Great dressing."],
-    tags: ["salad", "caesar", "healthy", "fresh", "crisp"]
+    reviewComments: ["Healthy and fresh!", "Great dressing."]
   },
   {
     id: 6,
@@ -232,122 +220,3 @@ const dishes = [
     reviewComments: ["Crispy and cheesy!", "Italian classic."]
   },
 ];
-
-function StarRating({ rating }: { rating: number }) {
-  const fullStars = Math.floor(rating);
-  const halfStar = rating % 1 >= 0.5;
-  const emptyStars = 5 - fullStars - (halfStar ? 1 : 0);
-  return (
-    <div className="flex">
-      {[...Array(fullStars)].map((_, i) => <span key={i} className="text-yellow-500">★</span>)}
-      {halfStar && <span className="text-yellow-500">☆</span>}
-      {[...Array(emptyStars)].map((_, i) => <span key={i} className="text-gray-300">☆</span>)}
-    </div>
-  );
-}
-
-export default function Menu() {
-   const [selectedDish, setSelectedDish] = useState<any | null>(null); // eslint-disable-line @typescript-eslint/no-explicit-any
-  const [searchQuery, setSearchQuery] = useState("");
-
-  const filteredDishes = useMemo(() => {
-    if (!searchQuery) return dishes;
-
-    const query = searchQuery.toLowerCase();
-    return dishes.filter(dish =>
-      dish.name.toLowerCase().includes(query) ||
-      dish.description.toLowerCase().includes(query) ||
-      dish.category.toLowerCase().includes(query) ||
-      (dish.tags && dish.tags.some((tag: string) => tag.toLowerCase().includes(query)))
-    );
-  }, [searchQuery]);
-
-  return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
-      <div className="max-w-6xl mx-auto py-8 px-4">
-        <h1 className="text-4xl font-bold text-center mb-8 text-gray-800 dark:text-white">Our Menu</h1>
-
-        {/* Search Bar */}
-        <div className="flex justify-center mb-8">
-          <SearchBar onSearch={setSearchQuery} placeholder="Search our delicious menu..." />
-        </div>
-
-        {/* Results count */}
-        {searchQuery && (
-          <p className="text-center mb-4 text-gray-600 dark:text-gray-300">
-            Found {filteredDishes.length} item{filteredDishes.length !== 1 ? 's' : ''} for &quot;{searchQuery}&quot;
-          </p>
-        )}
-
-        {filteredDishes.length === 0 ? (
-          <div className="text-center py-12">
-            <p className="text-xl text-gray-600 dark:text-gray-300 mb-4">
-              No items found matching &quot;{searchQuery}&quot;
-            </p>
-            <button
-              onClick={() => setSearchQuery("")}
-              className="bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-4 rounded transition-colors"
-            >
-              Show All Items
-            </button>
-          </div>
-        ) : (
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {filteredDishes.map((dish) => (
-            <div key={dish.id} className="bg-white dark:bg-gray-800 rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow">
-              <Image
-                src={dish.image}
-                alt={dish.name}
-                width={800}
-                height={600}
-                className="w-full h-48 object-cover"
-                loading="lazy"
-              />
-              <div className="p-6">
-                <h2 className="text-xl font-semibold mb-2 dark:text-white">{dish.name}</h2>
-                <p className="text-gray-600 dark:text-gray-300 mb-4">{dish.description}</p>
-                <div className="mb-4">
-                  <StarRating rating={dish.reviews.rating} />
-                  <span className="text-sm text-gray-500 ml-2">({dish.reviews.count} reviews)</span>
-                </div>
-                <div className="flex justify-between items-center mb-4">
-                  <span className="text-2xl font-bold text-red-600">${dish.price}</span>
-                  <button
-                    onClick={() => setSelectedDish(dish)}
-                    className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-1 px-3 rounded text-sm mr-2"
-                  >
-                    Nutrition
-                  </button>
-                </div>
-                <Link href={`/customize/${dish.id}`}>
-                  <button className="bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-4 rounded transition-colors w-full">
-                    Customize & Order
-                  </button>
-                </Link>
-              </div>
-            </div>
-            ))}
-          </div>
-        )}
-
-        {selectedDish && (
-          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-            <div className="bg-white p-6 rounded-lg max-w-md w-full">
-              <h3 className="text-lg font-bold mb-4">{selectedDish.name} Nutrition</h3>
-              <p>Calories: {selectedDish.nutrition.calories}</p>
-              <p>Protein: {selectedDish.nutrition.protein}g</p>
-              <p>Carbs: {selectedDish.nutrition.carbs}g</p>
-              <p>Fat: {selectedDish.nutrition.fat}g</p>
-              <button
-                onClick={() => setSelectedDish(null)}
-                className="mt-4 bg-red-600 text-white px-4 py-2 rounded"
-              >
-                Close
-              </button>
-            </div>
-          </div>
-        )}
-      </div>
-    </div>
-  );
-}
